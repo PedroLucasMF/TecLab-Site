@@ -1,0 +1,14 @@
+.header_background{
+  background-color: #1E201E;
+}
+
+.nav-link-custom {
+  color: white !important;
+  transition: opacity 0.2s ease;
+  font-size: large;
+  text-decoration: none;
+}
+
+.nav-link-custom:hover {
+  opacity: 0.7;
+}
