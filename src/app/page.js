@@ -3,6 +3,7 @@
 import { Carousel, Container } from "react-bootstrap";
 import Header from "./components/Header/Header";
 import './mainStyle.css'
+import Footer from "./components/Footer/Footer";
 
 export default function Home() {
   return (<>
@@ -39,6 +40,7 @@ export default function Home() {
         </Carousel>
       </div>
     </Container>
+    <Footer />
   </>
   );
 }
