@@ -9,6 +9,17 @@
   text-decoration: none;
 }
 
+.nav-link-custom-login {
+  color: #59A32B !important;
+  transition: opacity 0.2s ease;
+  font-size: large;
+  text-decoration: none;
+}
+
+.nav-link-custom-login:hover {
+  color: #7ee83c !important;
+}
+
 .nav-link-custom:hover {
   opacity: 0.7;
 }

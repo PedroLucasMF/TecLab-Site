@@ -2,6 +2,7 @@
 
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import logo from '../../public/logo_site.png'
+import login_image from '../../public/login_image.png'
 import Image from "next/image";
 import './style.css'
 import Link from "next/link";
@@ -17,9 +18,10 @@ export default function Header() {
             <Nav><Link className="nav-link-custom me-4" href="/campeonatos">Campeonatos</Link></Nav>
             <Nav><Link className="nav-link-custom me-4" href="/jogos">Jogos</Link></Nav>
             <Nav><Link className="nav-link-custom me-4" href="/equipes">Equipes</Link></Nav>
+            <Nav><Link className="nav-link-custom me-4" href="/players">Players</Link></Nav>
           </Nav>
           <Nav>
-            <Nav><Link className="nav-link-custom" href="/login">Login</Link></Nav>
+            <Nav><Link className="nav-link-custom-login" href="/login">Loginㅤ<Image width={50} src={login_image}/></Link></Nav>
           </Nav>
         </Navbar.Collapse>
       </Container>
