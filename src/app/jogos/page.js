@@ -11,7 +11,7 @@ export default function Page() {
     <>
       <Header />
       <Container>
-        <h1 className="d-flex justify-content-center my-4">Equipes</h1>
+        <h1 className="d-flex justify-content-center my-4">Jogos</h1>
 
         <div className='d-flex justify-content-center'>
           <Form.Control className='mt-2 mb-5 w-75' type="text" placeholder="Pesquisar..." />
