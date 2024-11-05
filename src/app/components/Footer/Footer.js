@@ -12,9 +12,6 @@ export default function Footer() {
         <Container className="py-2">
           <Row className="d-flex justify-content-between align-items-center">
             <Col md={4} className="d-flex align-items-center">
-              <a href="/" className="mb-3 me-2 mb-md-0 text-white text-decoration-none lh-1">
-                <FaHouse size="25px"/>
-              </a>
               <span className="mb-3 mb-md-0 text-white">© 2024 XtremeTournament</span>
             </Col>
 

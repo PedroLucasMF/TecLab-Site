@@ -4,9 +4,21 @@ import { Card, Col, Container, Form, Row } from 'react-bootstrap'
 import Header from '../components/Header/Header'
 import './equipesStyle.css'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import apiESports from '@/services/apiESports'
 
 export default function Page() {
 
+  const [equipes, setEquipes] = useState([])
+
+  useEffect(() => {
+    apiESports.get('equipes').then(resultado => {
+      setEquipes(resultado.data.data)
+    })
+    
+  }, [])
+
+  console.log(equipes)
   return (
     <>
       <Header />
