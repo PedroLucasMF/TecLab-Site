@@ -1,0 +1,34 @@
+.title-enderecos {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ECDFCC;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.imagem_perfil_preview {
+  border: 2px dotted #59A32B;
+  object-fit: cover;
+  width: 400px;
+  height: 400px;
+}
+
+.imagem_produto_preview_no_image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border: 2px dotted rgb(255, 0, 0);
+  width: 400px;
+  height: 400px;
+}
+
+.fix-select {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.fix-select:focus{
+  overflow: visible
+}

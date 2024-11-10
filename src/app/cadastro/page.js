@@ -18,7 +18,7 @@ const Register = () => {
   const router = useRouter();
 
   const handleRegister = (values) => {
-    const { email, senha, nome, cpf, imagem_perfil } = values;
+    const { email, senha, nome, imagem_perfil } = values;
     const users = JSON.parse(localStorage.getItem('users')) || [];
 
     const userExists = users.some(user => user.email === email);
@@ -26,7 +26,7 @@ const Register = () => {
     if (userExists) {
       alert('Usuário já existe');
     } else {
-      const newUser = { email, senha, nome, cpf, imagem_perfil };
+      const newUser = { email, senha, nome, imagem_perfil };
       newUser.id = v4()
       users.push(newUser);
       localStorage.setItem('users', JSON.stringify(users));
@@ -43,7 +43,7 @@ const Register = () => {
         </div>
         <div className='d-flex justify-content-center align-items-center my-3 py-4'>
           <Formik
-            initialValues={{ email: '', senha: '', nome: '', cpf: '', imagem_perfil: '' }}
+            initialValues={{ email: '', senha: '', nome: '', imagem_perfil: '' }}
             validationSchema={CadastroValidator}
             onSubmit={(values) => {
               handleRegister(values);
@@ -67,28 +67,6 @@ const Register = () => {
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.nome}
-                  </Form.Control.Feedback>
-                </Form.Group>
-
-                <Form.Group className="mb-4" controlId="formBasicCPF">
-                  <Form.Label className='text-white'>CPF</Form.Label>
-                  <ReactInputMask
-                    mask="999.999.999-99"
-                    value={values.cpf}
-                    onChange={handleChange}
-                  >
-                    {(inputProps) => (
-                      <Form.Control
-                        {...inputProps}
-                        type='text'
-                        placeholder='111.222.333-44'
-                        name="cpf"
-                        isInvalid={touched.cpf && !!errors.cpf}
-                      />
-                    )}
-                  </ReactInputMask>
-                  <Form.Control.Feedback type="invalid">
-                    {errors.cpf}
                   </Form.Control.Feedback>
                 </Form.Group>
 
@@ -146,7 +124,7 @@ const Register = () => {
                   </Button>
                 </div>
                 <div className='d-flex justify-content-center align-items-center my-2'>
-                  <p className='text-white'>Já tem uma conta? <Link href="/login">Login</Link></p>
+                  <p className='text-white'>Já é um de nós? <Link href="/login" className='text-success text-decoration-none'>Login</Link></p>
                 </div>
               </Form>
             )}

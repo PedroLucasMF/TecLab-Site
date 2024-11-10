@@ -26,7 +26,7 @@ const Login = () => {
         icon: 'success',
         title: 'Bem-vindo!',
         text: 'Login bem-sucedido!',
-        timer: 1000, // Mensagem fecha automaticamente após 1 segundo
+        timer: 1000,
         showConfirmButton: false,
       }).then(() => {
         router.push('/');
@@ -99,7 +99,7 @@ const Login = () => {
                   </Button>
                 </div>
                 <div className='d-flex justify-content-center align-items-center my-2'>
-                  <p className='text-white'>Não tem uma conta? <Link href="/cadastro">Cadastre-se</Link></p>
+                  <p className='text-white'>Novo por aqui? <Link href="/cadastro" className='text-success text-decoration-none'>Cadastre-se</Link></p>
                 </div>
               </Form>
             )}
