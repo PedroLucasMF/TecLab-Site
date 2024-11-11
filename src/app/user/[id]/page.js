@@ -13,6 +13,8 @@ import './styleUser.css'
 import { ImArrowRight } from "react-icons/im";
 import UserValidator from "@/app/validations/UserValidator";
 import Swal from "sweetalert2";
+import apiESports from "@/services/apiESports";
+import { useEffect, useState } from "react";
 
 export default function Page({ params }) {
 
@@ -20,7 +22,21 @@ export default function Page({ params }) {
 
   const users = JSON.parse(localStorage.getItem('users')) || [];
   const dados = users.find(item => item.id == params.id);
-  const user = dados || { nome: '', nome_real: '', email: '', imagem_perfil: '', bio: '', pais: '' };
+  const user = dados || { nome: '', nome_real: '', email: '', imagem_perfil: '', bio: '', pais: '', jogo_fav: '', time_fav: '' };
+
+  const [jogos, setJogos] = useState([])
+  const [equipes, setEquipes] = useState([])
+
+  useEffect(() => {
+    apiESports.get(`/jogos`).then(resultado => {
+      setJogos(resultado.data.data)
+    })
+    apiESports.get(`/equipes`).then(resultado => {
+      setEquipes(resultado.data.data)
+    })
+  }, [])
+
+  console.log(jogos)
 
   //A API VAI DEIXAR MUITO LERDO ENTAO O JEITO É FAZER ISSO AQ MESMO
   const countries = [
@@ -106,7 +122,7 @@ export default function Page({ params }) {
                   <Col>
 
                     <Form.Group as={Row} className="mb-4" controlId="nome">
-                      <Form.Label column sm="1"><b>Nome:</b> </Form.Label>
+                      <Form.Label column sm="1" className="text-dark"><b>Nome:</b> </Form.Label>
                       <Col sm="10">
                         <Form.Control
                           type="text"
@@ -119,7 +135,7 @@ export default function Page({ params }) {
                     </Form.Group>
 
                     <Form.Group as={Row} className="mb-4" controlId="nome_real">
-                      <Form.Label column sm="3"><b>Nome Verdadeiro:</b> </Form.Label>
+                      <Form.Label column sm="3" className="text-dark"><b>Nome Verdadeiro:</b> </Form.Label>
                       <Col sm="8">
                         <Form.Control
                           type="text"
@@ -132,7 +148,7 @@ export default function Page({ params }) {
                     </Form.Group>
 
                     <Form.Group as={Row} className="mb-4" controlId="bio">
-                      <Form.Label column sm='1'><b>Bio:</b> </Form.Label>
+                      <Form.Label column sm='1' className="text-dark"><b>Bio:</b> </Form.Label>
                       <Col sm='10'>
                         <Form.Control
                           as="textarea"
@@ -148,7 +164,7 @@ export default function Page({ params }) {
                     </Form.Group>
 
                     <Form.Group as={Row} className="mb-4" controlId="pais">
-                      <Form.Label column sm='1'><b>País:</b> </Form.Label>
+                      <Form.Label column sm='1' className="text-dark"><b>País:</b> </Form.Label>
                       <Col sm='6'>
                         <Form.Select
                           name="pais"
@@ -161,7 +177,7 @@ export default function Page({ params }) {
                         >
                           <option>Selecionar Pais</option>
                           {countries.map(item => (
-                            <option value={item.code}>{item.name} - {item.code}</option>
+                            <option key={item.code} value={item.code}>{item.name} - {item.code}</option>
                           ))}
                         </Form.Select>
                         <Form.Control.Feedback type="invalid">{errors.pais}</Form.Control.Feedback>
@@ -171,14 +187,14 @@ export default function Page({ params }) {
                           {values && values.pais === '' || values.pais === undefined ? (
                             <></>
                           ) : (
-                            <Image src={`https://flagsapi.com/${values.pais}/flat/48.png`} />
+                            <Image src={`https://flagsapi.com/${values.pais}/flat/48.png`} title={values.pais} alt={values.pais} />
                           )}
                         </div>
                       </Col>
                     </Form.Group>
 
                     <Form.Group as={Row} className="mb-4" controlId="email">
-                      <Form.Label column sm="1"><b>Email:</b> </Form.Label>
+                      <Form.Label column sm="1" className="text-dark"><b>Email:</b> </Form.Label>
                       <Col sm="10">
                         <Form.Control
                           type="text"
@@ -190,7 +206,7 @@ export default function Page({ params }) {
                     </Form.Group>
 
                     <Form.Group as={Row} className="mb-3" controlId="imagem_perfil">
-                      <Form.Label column sm='1'><b>Foto:</b> </Form.Label>
+                      <Form.Label column sm='1' className="text-dark"><b>Foto:</b> </Form.Label>
                       <Col sm='10'>
                         <Form.Control
                           type="text"
@@ -212,14 +228,49 @@ export default function Page({ params }) {
                 <hr />
 
                 <Row className="text-center">
-                  <Col md={4}>
-                    <h4>Jogo Favorito</h4>
+                  <Col md={6}>
+                    <h4 className="text-dark">Jogo Favorito</h4>
+                    <Form.Group as={Row} className="mb-4 className='d-flex justify-content-center align-items-center title-enderecos'" controlId="jogo_fav">
+                      <Col sm='6'>
+                        <Form.Select
+                          name="jogo_fav"
+                          value={values.jogo_fav}
+                          onChange={(e) => {
+                            handleChange(e);
+                            setFieldValue('jogo_fav', e.target.value);
+                          }}
+                          isInvalid={touched.jogo_fav && !!errors.jogo_fav}
+                        >
+                          <option>Selecionar</option>
+                          {jogos.map(item => (
+                            <option key={item.id} value={item.id}>{item.nome}</option>
+                          ))}
+                        </Form.Select>
+                        <Form.Control.Feedback type="invalid">{errors.jogo_fav}</Form.Control.Feedback>
+                      </Col>
+                    </Form.Group>
                   </Col>
-                  <Col md={4}>
-                    <h4>Time Favorito</h4>
-                  </Col>
-                  <Col md={4}>
-                    <h4>Jogador Favorito</h4>
+                  <Col md={6}>
+                    <h4 className="text-dark">Time Favorito</h4>
+                    <Form.Group as={Row} className="mb-4 className='d-flex justify-content-center align-items-center title-enderecos'" controlId="time_fav">
+                      <Col sm='6'>
+                        <Form.Select
+                          name="time_fav"
+                          value={values.time_fav}
+                          onChange={(e) => {
+                            handleChange(e);
+                            setFieldValue('time_fav', e.target.value);
+                          }}
+                          isInvalid={touched.time_fav && !!errors.time_fav}
+                        >
+                          <option>Selecionar</option>
+                          {equipes.map(item => (
+                            <option key={item.id} value={item.id}>{item.nome}</option>
+                          ))}
+                        </Form.Select>
+                        <Form.Control.Feedback type="invalid">{errors.time_fav}</Form.Control.Feedback>
+                      </Col>
+                    </Form.Group>
                   </Col>
                 </Row>
 
