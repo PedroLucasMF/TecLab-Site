@@ -30,3 +30,13 @@ h1, h2{
   border: none;
   box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.238), 0 6px 20px 0 rgba(0, 0, 0, 0.238);
 }
+
+.texto-limitado-largura-fixa {
+  margin-left: 5%;
+  margin-right: 5%;
+  text-align: center;
+  width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
