@@ -15,10 +15,9 @@ export default function Page() {
     apiESports.get('equipes').then(resultado => {
       setEquipes(resultado.data.data)
     })
-    
+
   }, [])
 
-  console.log(equipes)
   return (
     <>
       <Header />
@@ -30,49 +29,18 @@ export default function Page() {
         </div>
 
         <Row>
-          <Col md={3}>
-            <Link href="/equipes/id">
-              <Card style={{ width: '18rem' }}>
-                <Card.Img variant="top" src="https://api.draft5.gg/teams/6/logo" />
-                <Card.Body>
-                  <Card.Title>Nome Time</Card.Title>
-                </Card.Body>
-              </Card>
-            </Link>
-          </Col>
-
-          <Col md={3}>
-            <Link href="/equipes/id">
-              <Card style={{ width: '18rem' }}>
-                <Card.Img variant="top" src="https://api.draft5.gg/teams/6/logo" />
-                <Card.Body>
-                  <Card.Title>Nome Time</Card.Title>
-                </Card.Body>
-              </Card>
-            </Link>
-          </Col>
-
-          <Col md={3}>
-            <Link href="/equipes/id">
-              <Card style={{ width: '18rem' }}>
-                <Card.Img variant="top" src="https://api.draft5.gg/teams/6/logo" />
-                <Card.Body>
-                  <Card.Title>Nome Time</Card.Title>
-                </Card.Body>
-              </Card>
-            </Link>
-          </Col>
-
-          <Col md={3}>
-            <Link href="/equipes/id">
-              <Card style={{ width: '18rem' }}>
-                <Card.Img variant="top" src="https://api.draft5.gg/teams/6/logo" />
-                <Card.Body>
-                  <Card.Title>Nome Time</Card.Title>
-                </Card.Body>
-              </Card>
-            </Link>
-          </Col>
+          {equipes.map(item => (
+            <Col className='my-3' md={3}>
+              <Link href={`/equipes/${item.id}`}>
+                <Card className='equipe-card'>
+                  <Card.Img variant="top" src={item.logo} className='equipe-card-img p-4' />
+                  <Card.Body>
+                    <Card.Title>{item.nome}</Card.Title>
+                  </Card.Body>
+                </Card>
+              </Link>
+            </Col>
+          ))}
         </Row>
       </Container>
     </>
