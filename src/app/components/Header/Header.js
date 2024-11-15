@@ -73,9 +73,15 @@ export default function Header() {
                   )}
                 </div>
                 {loggedInUser.email === "admin@admin.com" ? (
-                  <Nav.Link href="/usersADM" className="ms-5">
-                    <FaUsersCog size={25} className="text-white" />
-                  </Nav.Link>
+                  <>
+                    <Nav.Link href="/usersADM" className="ms-5">
+                      <FaUsersCog size={25} className="text-white" />
+                    </Nav.Link>
+
+                    <Nav.Link href="/usersADM" className="ms-5 text-white">
+                      Generos
+                    </Nav.Link>
+                  </>
                 ) : (
                   <></>
                 )}
