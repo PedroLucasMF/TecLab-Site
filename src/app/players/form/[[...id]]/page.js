@@ -16,14 +16,14 @@ export default function Page({ params }) {
   const route = useRouter();
   const searchParams = useSearchParams();
 
-  const [produto, setProduto] = useState({ nome: '', regiao: '', logo: '' });
+  const [produto, setProduto] = useState({ nome_real: '', nick: '', idade: '', pais: '', foto: '' });
   const [loading, setLoading] = useState(false);
 
   // Carregar dados do produto para edição, se houver um ID
   useEffect(() => {
     if (params.id) {
       setLoading(true);
-      apiESports.get(`equipes/${params.id}`)
+      apiESports.get(`jogadores/${params.id}`)
         .then(response => {
           setProduto(response.data);
           setLoading(false);
@@ -40,12 +40,12 @@ export default function Page({ params }) {
     try {
       if (params.id) {
         // Atualizar produto existente
-        await apiESports.put(`equipes/${params.id}`, dados);
+        await apiESports.put(`jogadores/${params.id}`, dados);
       } else {
         // Criar novo produto
-        await apiESports.post('equipes/', dados);
+        await apiESports.post('jogadores/', dados);
       }
-      route.push('/equipes');
+      route.push('/players');
     } catch (error) {
       console.error('Erro ao salvar dados do produto:', error);
     }
@@ -56,7 +56,7 @@ export default function Page({ params }) {
       <Header />
       <Container>
         <div className='d-flex justify-content-center align-items-center my-3 texto-custom'>
-          <h2>{params.id ? 'EDITAR EQUIPE' : 'CRIAR EQUIPE'}</h2>
+          <h2>{params.id ? 'EDITAR JOGADOR' : 'CRIAR JOGADOR'}</h2>
         </div>
 
         {loading ? (
@@ -78,58 +78,87 @@ export default function Page({ params }) {
               <Form className="my-3" onSubmit={handleSubmit}>
                 <Row>
                   <Col>
-                    <Form.Group as={Row} className="mb-4" controlId="nome">
-                      <Form.Label column sm="1"><b>Nome:</b> </Form.Label>
+                    <Form.Group as={Row} className="mb-3" controlId="nick">
+                      <Form.Label column sm="1"><b>Nick:</b> </Form.Label>
                       <Col sm="10">
                         <Form.Control
                           type="text"
-                          name="nome"
-                          value={values.nome}
-                          onChange={handleChange('nome')}
-                          isInvalid={touched.nome && !!errors.nome}
+                          name="nick"
+                          value={values.nick}
+                          onChange={handleChange('nick')}
+                          isInvalid={touched.nick && !!errors.nick}
                         />
-                        <Form.Control.Feedback type="invalid">{errors.nome}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{errors.nick}</Form.Control.Feedback>
                       </Col>
                     </Form.Group>
 
-                    <Form.Group as={Row} className="mb-4" controlId="regiao">
-                      <Form.Label column sm='2'><b>Região:</b> </Form.Label>
-                      <Col sm='9'>
+                    <Form.Group as={Row} className="mb-3" controlId="nome_real">
+                      <Form.Label column sm="3"><b>Nome Real:</b> </Form.Label>
+                      <Col sm="8">
                         <Form.Control
                           type="text"
-                          name="regiao"
-                          value={values.regiao}
-                          onChange={handleChange('regiao')}
-                          isInvalid={touched.regiao && !!errors.regiao}
+                          name="nome_real"
+                          value={values.nome_real}
+                          onChange={handleChange('nome_real')}
+                          isInvalid={touched.nome_real && !!errors.nome_real}
                         />
-                        <Form.Control.Feedback type="invalid">{errors.regiao}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{errors.nome_real}</Form.Control.Feedback>
                       </Col>
                     </Form.Group>
 
-                    <Form.Group as={Row} className="mb-3" controlId="logo">
-                      <Form.Label column sm='1'><b>Logo:</b> </Form.Label>
+                    <Form.Group as={Row} className="mb-3" controlId="idade">
+                      <Form.Label column sm='1'><b>Idade:</b> </Form.Label>
                       <Col sm='10'>
                         <Form.Control
                           type="text"
-                          name="logo"
-                          placeholder="Url da Capa"
-                          value={values.logo}
-                          onChange={handleChange('logo')}
-                          isInvalid={touched.logo && !!errors.logo}
+                          name="idade"
+                          value={values.idade}
+                          onChange={handleChange('idade')}
+                          isInvalid={touched.idade && !!errors.idade}
                         />
-                        <Form.Control.Feedback type="invalid">{errors.logo}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{errors.idade}</Form.Control.Feedback>
+                      </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row} className="mb-3" controlId="pais">
+                      <Form.Label column sm='1'><b>País:</b> </Form.Label>
+                      <Col sm='10'>
+                        <Form.Control
+                          type="text"
+                          name="pais"
+                          placeholder="Digitar nome do País"
+                          value={values.pais}
+                          onChange={handleChange('pais')}
+                          isInvalid={touched.pais && !!errors.pais}
+                        />
+                        <Form.Control.Feedback type="invalid">{errors.pais}</Form.Control.Feedback>
+                      </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row} className="mb-3" controlId="foto">
+                      <Form.Label column sm='1'><b>Foto:</b> </Form.Label>
+                      <Col sm='10'>
+                        <Form.Control
+                          type="text"
+                          name="foto"
+                          placeholder="Url da Foto"
+                          value={values.foto}
+                          onChange={handleChange('foto')}
+                          isInvalid={touched.foto && !!errors.foto}
+                        />
+                        <Form.Control.Feedback type="invalid">{errors.foto}</Form.Control.Feedback>
                       </Col>
                     </Form.Group>
 
                     <div className='d-flex justify-content-center align-items-center my-5 texto-custom'>
-                      <h4>PREVIEW DA LOGO <ImArrowRight size={50} /></h4>
+                      <h4>PREVIEW DA FOTO <ImArrowRight size={50} /></h4>
                     </div>
                   </Col>
 
                   <Col>
                     <div className="d-flex justify-content-center align-items-center mt-5">
-                      {values.logo ? (
-                        <Image src={values.logo} alt="Preview Foto" className="imagem_produto_preview" />
+                      {values.foto ? (
+                        <Image src={values.foto} alt="Preview Foto" className="imagem_produto_preview" />
                       ) : (
                         <h2 className="text-danger imagem_produto_preview_no_image">Sem Foto!</h2>
                       )}
@@ -141,7 +170,7 @@ export default function Page({ params }) {
                   <Button type="submit" variant="success">
                     <FaCheck /> Salvar
                   </Button>
-                  <Link href={'/jogos'} className="btn btn-danger ms-2">
+                  <Link href={'/players'} className="btn btn-danger ms-2">
                     <MdOutlineArrowBack /> Voltar
                   </Link>
                 </div>

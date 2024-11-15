@@ -55,7 +55,7 @@ export default function Header() {
                 <div className="dropdown-wrapper">
                   <div onClick={handleToggleDropdown} className="dropdown-wrapper">
                     {loggedInUser.imagem_perfil === '' ? (
-                      <Image width={50} src={login_image} />
+                      <Image width={50} src={login_image} className="imagem_perfil me-5" />
                     ) : (
                       <img src={loggedInUser.imagem_perfil} className="imagem_perfil me-5" alt="Profile" />
                     )}

@@ -29,7 +29,7 @@ export default function Page({ params }) {
             <Col md={8} className="text-black">
               {jogo.genero &&
                 <>
-                  <h2>{jogo.nome}</h2>
+                  <h2 className="text-black">{jogo.nome}</h2>
                   <h3>{jogo.genero.nome}</h3>
                   <p>{jogo.descricao}</p>
                 </>
@@ -38,7 +38,7 @@ export default function Page({ params }) {
           </Row>
 
           <Row className="my-5 text-black">
-            <h2 className="d-flex justify-content-center">Torneios</h2>
+            <h2 className="d-flex justify-content-center text-black">Torneios</h2>
             {jogo.torneios && <>
               {jogo.torneios.map(item => (
                 <p>
