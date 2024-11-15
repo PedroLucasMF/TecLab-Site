@@ -1,190 +1,171 @@
-"use client";
+'use client';
 
-import { Card, Carousel, Col, Container, Row } from "react-bootstrap";
+import { Card, Carousel, Col, Container, Form, Image, Row, Button } from "react-bootstrap";
+import { useEffect, useState } from "react";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
-import { useState } from "react"; // Importando useState para o carousel circular
+import apiESports from "@/services/apiESports";
+import './campeonatosStyle.css';
+import Link from "next/link";
+import Swal from "sweetalert2";
+import { FaPlus, FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 
 export default function Page() {
-  // Carousel Circular de Imagens
-  const images = [
-    "https://mmorpgbr.com.br/wp-content/uploads/2022/02/league-of-legends-2022-patch-schedule-all-lol-season-12-updates-changes.jpeg",
-    "https://via.placeholder.com/300/FF5733",
-    "https://via.placeholder.com/300/33C4FF",
-    "https://via.placeholder.com/300/FF33E4",
-    "https://via.placeholder.com/300/85FF33",
-    "https://via.placeholder.com/300/FFC733",
-    "https://via.placeholder.com/300/3346FF",
-  ];
 
-  const [currentIndex, setCurrentIndex] = useState(0); // Começa no primeiro conjunto de imagens
+  const [torneios, setTorneios] = useState([]);
+  const [equipes, setEquipes] = useState([]);
+  const [search, setSearch] = useState(""); // Estado para a barra de busca
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  const visibleImages = 5; // Número de imagens visíveis ao mesmo tempo
+  useEffect(() => {
+    verificarAdmin();
+    carregarDados();
+  }, []);
 
-  // Função para ir para a próxima imagem
-  const nextImage = () => {
-    setCurrentIndex((prevIndex) =>
-      (prevIndex + 1) % images.length // Volta para o início ao chegar no final
-    );
-  };
-
-  // Função para voltar para a imagem anterior
-  const prevImage = () => {
-    setCurrentIndex((prevIndex) =>
-      (prevIndex - 1 + images.length) % images.length // Volta para o final ao chegar no início
-    );
-  };
-
-  // Lógica para pegar as 5 imagens (duas anteriores, atual, e duas seguintes)
-  const getVisibleImages = () => {
-    const visible = [];
-    for (let i = -2; i <= 2; i++) {
-      visible.push(images[(currentIndex + i + images.length) % images.length]);
+  // Verifica se o usuário é administrador
+  const verificarAdmin = () => {
+    const usuario = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (usuario && usuario.email === 'admin@admin.com') {
+      setIsAdmin(true);
     }
-    return visible;
   };
+
+  // Carrega os dados dos torneios e equipes
+  const carregarDados = () => {
+    apiESports.get(`/torneios`).then(resultado => {
+      setTorneios(resultado.data.data);
+    });
+
+    apiESports.get(`/equipes`).then(resultado => {
+      setEquipes(resultado.data.data);
+    });
+  };
+
+  // Exclui um campeonato com confirmação
+  const excluirTorneio = async (id) => {
+    Swal.fire({
+      title: 'Tem certeza?',
+      text: "Essa ação não pode ser desfeita!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sim, excluir!',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await apiESports.delete(`/torneios/${id}`);
+          carregarDados();
+          Swal.fire('Excluído!', 'O campeonato foi excluído com sucesso.', 'success');
+        } catch (error) {
+          console.error('Erro ao excluir torneio:', error);
+          Swal.fire('Erro!', 'Ocorreu um erro ao tentar excluir o campeonato.', 'error');
+        }
+      }
+    });
+  };
+
+  // Função para dividir o array de equipes em subarrays de 4
+  const chunkArray = (array, size) => {
+    const result = [];
+    for (let i = 0; i < array.length; i += size) {
+      result.push(array.slice(i, i + size));
+    }
+    return result;
+  };
+
+  const groupedTeams = chunkArray(equipes, 4);
+
+  // Filtrar campeonatos baseados no texto de busca
+  const filteredTorneios = torneios.filter(torneio =>
+    torneio.nome.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <>
       <Header />
       <Container>
-        <Row>
-          <h1 className="d-flex justify-content-center my-4">Campeonatos</h1>
+        {/* Carousel de Campeonatos */}
+        <h1 className="d-flex justify-content-center my-4">Campeonatos Agora</h1>
+        <div className="d-flex justify-content-center">
+          <Carousel className="w-75 carousel_background" fade indicators={false}>
+            {torneios.map(item => (
+              <Carousel.Item key={item.id} interval={3000}>
+                <a href="#">
+                  <Image className="d-block w-100 carousel_img" src={item.logoCamp} alt={item.nome} />
+                </a>
+                <Carousel.Caption className="carousel_caption_area">
+                  <h3>{item.nome}</h3>
+                </Carousel.Caption>
+              </Carousel.Item>
+            ))}
+          </Carousel>
+        </div>
 
-          <div
-            style={{
-              backgroundColor: "grey",
-              alignItems: "center",
-              textAlign: "center",
-              borderRadius: "10px",
-            }}
-          >
-            <Col>
-              <h2>Populares</h2>
+        {/* Carousel de Equipes */}
+        <h1 className="d-flex justify-content-center my-4">Equipes Populares</h1>
+        <div className="d-flex justify-content-center">
+          <Carousel className="w-75" indicators={false}>
+            {groupedTeams.map((group, index) => (
+              <Carousel.Item key={index}>
+                <Row className="g-4 p-4">
+                  {group.map(item => (
+                    <Col key={item.id} xs={12} sm={6} md={3}>
+                      <Card className="text-center">
+                        <Link href={`/equipes/${item.id}`}>
+                          <Card.Img
+                            variant="top"
+                            src={item.logo}
+                            alt={item.nome}
+                            className="team-logo mx-auto"
+                          />
+                          <Card.Body>
+                            <Card.Title className="nome-equipe text-black">{item.nome}</Card.Title>
+                          </Card.Body>
+                        </Link>
+                      </Card>
+                    </Col>
+                  ))}
+                </Row>
+              </Carousel.Item>
+            ))}
+          </Carousel>
+        </div>
+
+        {/* Barra de Busca e Cards dos Campeonatos */}
+        <h1 className="d-flex justify-content-center my-4">Pesquisar Campeonatos</h1>
+        <Form className="mb-4">
+          <Form.Control
+            type="text"
+            placeholder="Digite o nome do campeonato..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </Form>
+        {isAdmin && (
+          <Link className='btn btn-success mb-3' href={`/campeonatos/form`}><FaPlus /> Adicionar</Link>
+        )}
+        <Row className="g-4">
+          {filteredTorneios.map(torneio => (
+            <Col key={torneio.id} xs={12} sm={6} md={4} lg={3}>
+              <Link href={`/campeonatos/${torneio.id}`}>
+                <Card className="text-center torneio-card">
+                  <Card.Img variant="top" src={torneio.logoCamp} alt={torneio.nome} className="torneio-card-img" />
+                  <Card.Body>
+                    <Card.Title className="text-black">{torneio.nome}</Card.Title>
+                  </Card.Body>
+                </Card>
+              </Link>
+
+              {isAdmin && (
+                <div className='d-flex gap-2 mt-2'>
+                  <Link className='btn btn-primary w-50' href={`/campeonatos/form/${torneio.id}`}>Editar <FaRegEdit /></Link>
+                  <Button variant="danger" className='w-50' size="sm" onClick={() => excluirTorneio(torneio.id)}>Excluir <FaRegTrashAlt /></Button>
+                </div>
+              )}
             </Col>
-
-            <Col
-              style={{
-                alignItems: "center",
-                textAlign: "center",
-                paddingLeft: "270px",
-              }}
-            >
-              <Carousel
-                className="w-75 carousel_background"
-                fade
-                indicators={false}
-              >
-                <Carousel.Item interval={3000}>
-                  <a href="#">
-                    <img
-                      className="d-block w-100 carousel_img"
-                      src="https://files.bo3.gg/uploads/news/51099/title_image/960x480-3c3285bf6594457a61646b88b40ed856.webp"
-                    />
-                  </a>
-                  <Carousel.Caption className="carousel_caption_area">
-                    <h3>Counter Strike 2</h3>
-                    <p>
-                      Nulla vitae elit libero, a pharetra augue mollis interdum.
-                    </p>
-                  </Carousel.Caption>
-                </Carousel.Item>
-                <Carousel.Item interval={3000}>
-                  <img
-                    className="d-block w-100 carousel_img"
-                    src="https://esports.as.com/2022/05/06/league-of-legends/League-Legends-contara-sistema-desafios_1571552855_971917_1440x810.jpg"
-                  />
-                  <Carousel.Caption className="carousel_caption_area">
-                    <h3>League of Legends</h3>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    </p>
-                  </Carousel.Caption>
-                </Carousel.Item>
-                <Carousel.Item interval={3000}>
-                  <img
-                    className="d-block w-100 carousel_img"
-                    src="https://www.riotgames.com/darkroom/1440/8d5c497da1c2eeec8cffa99b01abc64b:5329ca773963a5b739e98e715957ab39/ps-f2p-val-console-launch-16x9.jpg"
-                  />
-                  <Carousel.Caption className="carousel_caption_area">
-                    <h3>Valorant</h3>
-                    <p>
-                      Praesent commodo cursus magna, vel scelerisque nisl
-                      consectetur.
-                    </p>
-                  </Carousel.Caption>
-                </Carousel.Item>
-              </Carousel>
-            </Col>
-          </div>
-
-          {/* Carousel Circular de Imagens começa aqui */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              marginTop: "20px",
-              alignItems: "center",
-            }}
-          >
-            <button onClick={prevImage}>Prev</button>
-
-            <div
-              style={{
-                display: "flex",
-                overflow: "hidden", // Esconde as imagens extras
-                width: "800px", // Ajusta conforme o número de imagens visíveis
-                margin: "0 10px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  transition: "transform 0.3s ease-in-out", // Transição suave
-                }}
-              >
-                {getVisibleImages().map((image, index) => (
-                  <img
-                    key={index}
-                    src={image}
-                    width="150px"
-                    height="150px"
-                    style={{
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                      marginRight: "10px",
-                    }}
-                    alt={`Imagem ${index}`}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <button onClick={nextImage}>Next</button>
-          </div>
-          {/* Carousel Circular de Imagens termina aqui */}
-
-          <div
-            style={{
-              display: "flex",
-              flexFlow: "row",
-              justifyContent: "space-around",
-            }}
-          >
-            <Card style={{ width: "18rem" }} className="mb-2">
-              <Card.Header>Ao Vivo</Card.Header>
-              <Card.Body>
-                <Card.Img src="https://notadogame.com/uploads/game/cover/250x/650e513cbec38.jpg" />
-              </Card.Body>
-            </Card>
-
-            <Card style={{ width: "18rem" }} className="mb-2">
-              <Card.Header>Transmissão anterior</Card.Header>
-              <Card.Body>
-                <Card.Img src="https://notadogame.com/uploads/game/cover/250x/650e513cbec38.jpg" />
-              </Card.Body>
-            </Card>
-          </div>
+          ))}
         </Row>
       </Container>
       <Footer />

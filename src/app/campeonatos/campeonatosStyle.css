@@ -1,0 +1,92 @@
+.carousel_background{
+  border-radius: 30px;
+  box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.348), 0 6px 20px 0 rgba(0, 0, 0, 0.353);
+}
+
+.carousel_caption_area{
+  background-color: rgba(19, 19, 19, 0.8);
+  border-radius: 20px;
+  border-left: 2px solid #ECDFCC;
+  border-right: 2px solid #ECDFCC;
+}
+
+.carousel_img{
+  height: 500px;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+.team-logo {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+
+/* Estilização para os controles de navegação do Carousel */
+.carousel-control-prev,
+.carousel-control-next {
+  width: 5%;
+  color: #fff;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  padding: 20px;
+  font-size: 1.6rem;
+  transition: transform 0.2s, background-color 0.3s;
+}
+
+/* Efeito de hover nos controles */
+.carousel-control-prev-icon:hover,
+.carousel-control-next-icon:hover {
+  transform: scale(1.2);
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.nome-equipe {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1.1rem;
+}
+
+/*Estilização dos cards*/
+.card {
+  transition: transform 0.3s ease-in-out;
+  border: none;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  border: none;
+  box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.238), 0 6px 20px 0 rgba(0, 0, 0, 0.238);
+}
+
+a{
+  text-decoration: none;
+}
+
+.torneio-card {
+  height: 300px; /* Altura fixa para os cards */
+  width: 100%;   /* A largura será definida pelo grid do Bootstrap */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  border: 1px solid black;
+}
+
+.torneio-card-img {
+  height: 250px; /* Altura fixa para a imagem */
+  object-fit: fill; /* Ajusta a imagem para cobrir o espaço sem distorcer */
+}
+
+.borda-sombra {
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.536);
+}

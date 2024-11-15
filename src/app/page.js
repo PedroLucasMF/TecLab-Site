@@ -6,6 +6,7 @@ import './mainStyle.css';
 import Footer from "./components/Footer/Footer";
 import { useEffect, useState } from "react";
 import apiESports from "@/services/apiESports";
+import Link from "next/link";
 
 export default function Home() {
 
@@ -74,12 +75,14 @@ export default function Home() {
               <Row xs={1} md={3} className="g-4">
                 {jogos.map((game, index) => (
                   <Col key={index}>
-                    <Card
-                      onMouseEnter={() => handleMouseEnter(game)}
-                      style={{ height: '350px', width: '250px' }}
-                    >
-                      <Card.Img variant="top" src={game.cover} style={{ height: '350px', objectFit: 'fit' }} />
-                    </Card>
+                    <Link href={`/jogos/${game.id}`}>
+                      <Card
+                        onMouseEnter={() => handleMouseEnter(game)}
+                        style={{ height: '350px', width: '250px' }}
+                      >
+                        <Card.Img variant="top" src={game.cover} style={{ height: '350px', objectFit: 'fit' }} />
+                      </Card>
+                    </Link>
                   </Col>
                 ))}
               </Row>
