@@ -182,7 +182,7 @@ export default function Page({ params }) {
                   <Button type="submit" variant="success">
                     <FaCheck /> Salvar
                   </Button>
-                  <Link href={'/jogos'} className="btn btn-danger ms-2">
+                  <Link href={'/campeonatos'} className="btn btn-danger ms-2">
                     <MdOutlineArrowBack /> Voltar
                   </Link>
                 </div>

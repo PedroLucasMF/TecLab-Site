@@ -103,10 +103,12 @@ export default function Page() {
           </Carousel>
         </div>
 
+        <hr className="mt-5"/>
+
         {/* Carousel de Equipes */}
         <h1 className="d-flex justify-content-center my-4">Equipes Populares</h1>
         <div className="d-flex justify-content-center">
-          <Carousel className="w-75" indicators={false}>
+          <Carousel className="w-100" indicators={false}>
             {groupedTeams.map((group, index) => (
               <Carousel.Item key={index}>
                 <Row className="g-4 p-4">
@@ -118,7 +120,7 @@ export default function Page() {
                             variant="top"
                             src={item.logo}
                             alt={item.nome}
-                            className="team-logo mx-auto"
+                            className="team-logo mx-auto p-1"
                           />
                           <Card.Body>
                             <Card.Title className="nome-equipe text-black">{item.nome}</Card.Title>
@@ -133,8 +135,10 @@ export default function Page() {
           </Carousel>
         </div>
 
+        <hr />
+
         {/* Barra de Busca e Cards dos Campeonatos */}
-        <h1 className="d-flex justify-content-center my-4">Pesquisar Campeonatos</h1>
+        <h1 className="d-flex justify-content-center my-4">Campeonatos</h1>
         <Form className="mb-4">
           <Form.Control
             type="text"

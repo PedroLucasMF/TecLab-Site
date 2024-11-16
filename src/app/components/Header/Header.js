@@ -40,7 +40,7 @@ export default function Header() {
   return (
     <Navbar collapseOnSelect expand="lg" className="header_background">
       <Container>
-        <Navbar.Brand className="pe-5"><Link href="/"><Image width={50} src={logo} /></Link></Navbar.Brand>
+        <Navbar.Brand className="pe-5"><Link href="/"><Image width={50} src={logo} alt="Logo" /></Link></Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
@@ -55,7 +55,7 @@ export default function Header() {
                 <div className="dropdown-wrapper">
                   <div onClick={handleToggleDropdown} className="dropdown-wrapper">
                     {loggedInUser.imagem_perfil === '' ? (
-                      <Image width={50} src={login_image} className="imagem_perfil me-5" />
+                      <Image width={50} src={login_image} className="imagem_perfil me-5" alt="noFoto"/>
                     ) : (
                       <img src={loggedInUser.imagem_perfil} className="imagem_perfil me-5" alt="Profile" />
                     )}
@@ -88,7 +88,7 @@ export default function Header() {
               </>
             )
               :
-              <Nav><Link className="nav-link-custom-login" href="/login">Loginㅤ<Image width={50} src={login_image} /></Link></Nav>
+              <Nav><Link className="nav-link-custom-login" href="/login">Loginㅤ<Image width={50} src={login_image} alt="Login"/></Link></Nav>
             }
           </Nav>
         </Navbar.Collapse>
