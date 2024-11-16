@@ -12,14 +12,14 @@ export default function Home() {
 
   const [selectedGame, setSelectedGame] = useState(null);
   const [jogos, setJogos] = useState([]);
-  const [equipes, setEquipes] = useState([]);
+  const [torneios, setTorneios] = useState([]);
 
   useEffect(() => {
     apiESports.get(`/jogos`).then(resultado => {
       setJogos(resultado.data.data);
     });
-    apiESports.get(`/equipes`).then(resultado => {
-      setEquipes(resultado.data.data);
+    apiESports.get(`/torneios`).then(resultado => {
+      setTorneios(resultado.data.data);
     });
   }, []);
 
@@ -54,14 +54,13 @@ export default function Home() {
         <h1 className="d-flex justify-content-center my-4">Populares no Momento</h1>
         <div className="d-flex justify-content-center">
           <Carousel className="w-75 carousel_background" fade indicators={false}>
-            {jogos.map(item => (
-              <Carousel.Item interval={3000}>
-                <a href="#">
-                  <Image className="d-block w-100 carousel_img" src={item.foto} />
-                </a>
+            {torneios.map(item => (
+              <Carousel.Item key={item.id} interval={3000}>
+                <Link href={`/campeonatos/${item.id}`}>
+                  <Image className="d-block w-100 carousel_img" src={item.logoCamp} />
+                </Link>
                 <Carousel.Caption className="carousel_caption_area">
                   <h3>{item.nome}</h3>
-                  <p className="texto-limitado-largura-fixa">{item.descricao}</p>
                 </Carousel.Caption>
               </Carousel.Item>
             ))}

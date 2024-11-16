@@ -16,10 +16,6 @@
   border-radius: 20px;
 }
 
-h1, h2{
-  color: #ECDFCC;
-}
-
 .card {
   transition: transform 0.3s ease-in-out;
   border: none;

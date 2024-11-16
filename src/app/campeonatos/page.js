@@ -92,9 +92,9 @@ export default function Page() {
           <Carousel className="w-75 carousel_background" fade indicators={false}>
             {torneios.map(item => (
               <Carousel.Item key={item.id} interval={3000}>
-                <a href="#">
+                <Link href={`/campeonatos/${item.id}`}>
                   <Image className="d-block w-100 carousel_img" src={item.logoCamp} alt={item.nome} />
-                </a>
+                </Link>
                 <Carousel.Caption className="carousel_caption_area">
                   <h3>{item.nome}</h3>
                 </Carousel.Caption>

@@ -5,6 +5,8 @@ import apiESports from "@/services/apiESports";
 import { useEffect, useState } from "react";
 import Header from "@/app/components/Header/Header";
 import Footer from "@/app/components/Footer/Footer";
+import './Style.css'
+import Link from "next/link";
 
 export default function Page({ params }) {
   const [torneio, setTorneio] = useState({});
@@ -13,6 +15,8 @@ export default function Page({ params }) {
   const [partidaEquipesFiltradas, setPartidaEquipesFiltradas] = useState([]);
   const [equipesDisponiveis, setEquipesDisponiveis] = useState([]);
   const [equipeSelecionada, setEquipeSelecionada] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
 
   useEffect(() => {
     // Carregar dados do torneio e suas partidas
@@ -30,7 +34,17 @@ export default function Page({ params }) {
     apiESports.get(`/equipes?perPage=100`).then((resultado) => {
       setEquipesDisponiveis(resultado.data.data);
     });
+
+    verificarAdmin();
+
   }, [params.id]);
+
+  const verificarAdmin = () => {
+    const usuario = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (usuario && usuario.email === 'admin@admin.com') {
+      setIsAdmin(true);
+    }
+  };
 
   useEffect(() => {
     // Filtrar as partidas do torneio
@@ -214,49 +228,55 @@ export default function Page({ params }) {
             </Col>
           </Row>
 
-          <Row className="my-5 text-black">
+          <Row className="d-flex justify-content-center gap-3 my-5 text-black">
             <h2 className="d-flex justify-content-center">Equipes Participantes</h2>
             {torneio.equipes && (
               <>
                 {torneio.equipes.map((item) => (
                   <Col md={2} key={item.id}>
-                    <Card>
-                      <Card.Img variant="top" src={item.logo} />
-                      <Card.Body>
-                        <Card.Title>{item.nome}</Card.Title>
-                      </Card.Body>
-                    </Card>
-                    <Button
-                      variant="danger"
-                      onClick={() => removerEquipe(item.id)}
-                    >
-                      Remover
-                    </Button>
+                    <Link className="text-decoration-none" href={`/equipes/${item.id}`}>
+                      <Card className="equipe-card">
+                        <Card.Img className="equipe-card-img" variant="top" src={item.logo} />
+                        <Card.Body>
+                          <Card.Title>{item.nome}</Card.Title>
+                        </Card.Body>
+                      </Card>
+                    </Link>
+                    {isAdmin &&
+                      <Button
+                        variant="danger"
+                        onClick={() => removerEquipe(item.id)}
+                      >
+                        Remover
+                      </Button>
+                    }
                   </Col>
                 ))}
               </>
             )}
           </Row>
 
-          <Row className="my-5 text-black">
-            <h2 className="d-flex justify-content-center">Adicionar Equipe</h2>
-            <Form className="d-flex justify-content-center align-items-center">
-              <Form.Select
-                onChange={(e) => setEquipeSelecionada(Number(e.target.value))}
-                className="me-2"
-              >
-                <option value="">Selecione uma equipe</option>
-                {equipesDisponiveis.map((equipe) => (
-                  <option key={equipe.id} value={equipe.id}>
-                    {equipe.nome}
-                  </option>
-                ))}
-              </Form.Select>
-              <Button onClick={adicionarEquipeAoTorneio} variant="primary">
-                Adicionar
-              </Button>
-            </Form>
-          </Row>
+          {isAdmin &&
+            <Row className="my-5 text-black">
+              <h2 className="d-flex justify-content-center">Adicionar Equipe</h2>
+              <Form className="d-flex justify-content-center align-items-center">
+                <Form.Select
+                  onChange={(e) => setEquipeSelecionada(Number(e.target.value))}
+                  className="me-2"
+                >
+                  <option value="">Selecione uma equipe</option>
+                  {equipesDisponiveis.map((equipe) => (
+                    <option key={equipe.id} value={equipe.id}>
+                      {equipe.nome}
+                    </option>
+                  ))}
+                </Form.Select>
+                <Button onClick={adicionarEquipeAoTorneio} variant="primary">
+                  Adicionar
+                </Button>
+              </Form>
+            </Row>
+          }
 
           <Row className="my-5 text-black">
             <h2 className="d-flex justify-content-center">Partidas</h2>
@@ -276,82 +296,85 @@ export default function Page({ params }) {
                         <p>Confronto ainda não definido</p>
                       )}
                     </Card.Body>
-                    <Button
-                      variant="danger"
-                      onClick={() => removerPartida(partida.id)}
-                    >
-                      Remover
-                    </Button>
+                    {isAdmin &&
+                      <Button
+                        variant="danger"
+                        onClick={() => removerPartida(partida.id)}
+                      >
+                        Remover
+                      </Button>
+                    }
                   </Card>
                 </Col>
               );
             })}
           </Row>
 
-          <Row className="my-5 text-black">
-            <h2 className="d-flex justify-content-center">Adicionar Nova Partida</h2>
-            <Col md={6} className="offset-md-3">
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const formData = new FormData(e.target);
-                  const equipe1Id = formData.get('equipe1');
-                  const equipe2Id = formData.get('equipe2');
-                  const dataPartida = formData.get('dataPartida');
+          {isAdmin &&
+            <Row className="my-5 text-black">
+              <h2 className="d-flex justify-content-center">Adicionar Nova Partida</h2>
+              <Col md={6} className="offset-md-3">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+                    const equipe1Id = formData.get('equipe1');
+                    const equipe2Id = formData.get('equipe2');
+                    const dataPartida = formData.get('dataPartida');
 
-                  if (equipe1Id === equipe2Id) {
-                    alert('As equipes não podem ser iguais!');
-                    return;
+                    if (equipe1Id === equipe2Id) {
+                      alert('As equipes não podem ser iguais!');
+                      return;
+                    }
+
+                    adicionarPartida(equipe1Id, equipe2Id, dataPartida);
+                  }}
+                >
+                  {torneio.equipes &&
+                    <>
+                      <div className="mb-3">
+                        <label className="form-label">Equipe 1</label>
+                        <select name="equipe1" className="form-select" required>
+                          <option value="">Selecione uma equipe</option>
+                          {torneio.equipes.map((equipe) => (
+                            <option key={equipe.id} value={equipe.id}>
+                              {equipe.nome}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="mb-3">
+                        <label className="form-label">Equipe 2</label>
+                        <select name="equipe2" className="form-select" required>
+                          <option value="">Selecione uma equipe</option>
+                          {torneio.equipes.map((equipe) => (
+                            <option key={equipe.id} value={equipe.id}>
+                              {equipe.nome}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="mb-3">
+                        <label className="form-label">Data da Partida</label>
+                        <input
+                          type="date"
+                          name="dataPartida"
+                          className="form-control"
+                          required
+                        />
+                      </div>
+
+                      <button type="submit" className="btn btn-primary">
+                        Adicionar Partida
+                      </button>
+                    </>
                   }
-
-                  adicionarPartida(equipe1Id, equipe2Id, dataPartida);
-                }}
-              >
-                {torneio.equipes &&
-                  <>
-                    <div className="mb-3">
-                      <label className="form-label">Equipe 1</label>
-                      <select name="equipe1" className="form-select" required>
-                        <option value="">Selecione uma equipe</option>
-                        {torneio.equipes.map((equipe) => (
-                          <option key={equipe.id} value={equipe.id}>
-                            {equipe.nome}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="mb-3">
-                      <label className="form-label">Equipe 2</label>
-                      <select name="equipe2" className="form-select" required>
-                        <option value="">Selecione uma equipe</option>
-                        {torneio.equipes.map((equipe) => (
-                          <option key={equipe.id} value={equipe.id}>
-                            {equipe.nome}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="mb-3">
-                      <label className="form-label">Data da Partida</label>
-                      <input
-                        type="date"
-                        name="dataPartida"
-                        className="form-control"
-                        required
-                      />
-                    </div>
-
-                    <button type="submit" className="btn btn-primary">
-                      Adicionar Partida
-                    </button>
-                  </>
-                }
-              </form>
-            </Col>
-          </Row>
-
+                </form>
+              </Col>
+            </Row>
+          }
         </div>
       </Container>
       <Footer />

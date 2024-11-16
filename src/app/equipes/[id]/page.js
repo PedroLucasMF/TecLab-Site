@@ -12,6 +12,7 @@ export default function Page({ params }) {
   const [jogadores, setJogadores] = useState([]); // Lista de jogadores disponíveis
   const [jogadorSelecionado, setJogadorSelecionado] = useState(null); // Jogador a ser adicionado
   const [equipe_jogador, setEquipe_jogador] = useState([])
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     // Carregar os dados da equipe
@@ -27,9 +28,17 @@ export default function Page({ params }) {
     apiESports.get(`/equipe_jogadores?perPage=100`).then((resultado) => {
       setEquipe_jogador(resultado.data.data)
     })
+
+    verificarAdmin();
+
   }, [params.id]);
 
-  // Função para adicionar o jogador à equipe
+  const verificarAdmin = () => {
+    const usuario = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (usuario && usuario.email === 'admin@admin.com') {
+      setIsAdmin(true);
+    }
+  };
   // Função para adicionar o jogador à equipe
   const adicionarJogador = () => {
     if (jogadorSelecionado) {
@@ -123,37 +132,41 @@ export default function Page({ params }) {
                       <Card.Title>{item.nick}</Card.Title>
                     </Card.Body>
                   </Card>
-                  <Button
-                    variant="danger"
-                    className="mt-2"
-                    onClick={() => removerJogador(item.id)}
-                  >
-                    Remover
-                  </Button>
+                  {isAdmin &&
+                    <Button
+                      variant="danger"
+                      className="mt-2"
+                      onClick={() => removerJogador(item.id)}
+                    >
+                      Remover
+                    </Button>
+                  }
                 </Col>
               ))}
             </>}
           </Row>
 
-          <Row className="my-5 text-black">
-            <h2 className="d-flex justify-content-center">Adicionar Novo Integrante</h2>
-            <Form className="d-flex justify-content-center align-items-center">
-              <Form.Select
-                onChange={(e) => setJogadorSelecionado(Number(e.target.value))}
-                className="me-2"
-              >
-                <option value="">Selecione um jogador</option>
-                {jogadores.map(jogador => (
-                  <option key={jogador.id} value={jogador.id}>
-                    {jogador.nick}
-                  </option>
-                ))}
-              </Form.Select>
-              <Button onClick={adicionarJogador} variant="primary">
-                Adicionar
-              </Button>
-            </Form>
-          </Row>
+          {isAdmin &&
+            <Row className="my-5 text-black">
+              <h2 className="d-flex justify-content-center">Adicionar Novo Integrante</h2>
+              <Form className="d-flex justify-content-center align-items-center">
+                <Form.Select
+                  onChange={(e) => setJogadorSelecionado(Number(e.target.value))}
+                  className="me-2"
+                >
+                  <option value="">Selecione um jogador</option>
+                  {jogadores.map(jogador => (
+                    <option key={jogador.id} value={jogador.id}>
+                      {jogador.nick}
+                    </option>
+                  ))}
+                </Form.Select>
+                <Button onClick={adicionarJogador} variant="primary">
+                  Adicionar
+                </Button>
+              </Form>
+            </Row>
+          }
 
           <Row className="my-5 text-black">
             <h2 className="d-flex justify-content-center">Torneios</h2>
