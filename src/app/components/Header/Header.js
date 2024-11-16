@@ -78,7 +78,7 @@ export default function Header() {
                       <FaUsersCog size={25} className="text-white" />
                     </Nav.Link>
 
-                    <Nav.Link href="/usersADM" className="ms-5 text-white">
+                    <Nav.Link href="/generos" className="ms-5 text-white">
                       Generos
                     </Nav.Link>
                   </>

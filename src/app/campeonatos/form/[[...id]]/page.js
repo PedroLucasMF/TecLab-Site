@@ -16,38 +16,44 @@ export default function Page({ params }) {
   const route = useRouter();
   const searchParams = useSearchParams();
 
-  const [produto, setProduto] = useState({ nome: '', regiao: '', logo: '' });
+  const [torneio, setTorneio] = useState({ nome: '', dataInicio: '', dataFim: '', jogoId: '', logoCamp: '' });
+  const [jogos, setJogos] = useState([])
   const [loading, setLoading] = useState(false);
 
-  // Carregar dados do produto para edição, se houver um ID
+  // Carregar dados do torneio para edição, se houver um ID
   useEffect(() => {
     if (params.id) {
       setLoading(true);
-      apiESports.get(`equipes/${params.id}`)
+      apiESports.get(`torneios/${params.id}`)
         .then(response => {
-          setProduto(response.data);
+          setTorneio(response.data);
           setLoading(false);
         })
         .catch(error => {
-          console.error('Erro ao carregar dados do produto:', error);
+          console.error('Erro ao carregar dados do torneio:', error);
           setLoading(false);
         });
     }
+
+    apiESports.get(`/jogos`).then(response => {
+      setJogos(response.data.data)
+    })
+
   }, [params.id]);
 
-  // Função para salvar (criar ou atualizar) o produto
+  // Função para salvar (criar ou atualizar) o torneio
   const salvar = async (dados) => {
     try {
       if (params.id) {
-        // Atualizar produto existente
-        await apiESports.put(`equipes/${params.id}`, dados);
+        // Atualizar torneio existente
+        await apiESports.put(`torneios/${params.id}`, dados);
       } else {
-        // Criar novo produto
-        await apiESports.post('equipes/', dados);
+        // Criar novo torneio
+        await apiESports.post('torneios/', dados);
       }
-      route.push('/equipes');
+      route.push('/campeonatos');
     } catch (error) {
-      console.error('Erro ao salvar dados do produto:', error);
+      console.error('Erro ao salvar dados do torneio:', error);
     }
   };
 
@@ -56,14 +62,14 @@ export default function Page({ params }) {
       <Header />
       <Container>
         <div className='d-flex justify-content-center align-items-center my-3 texto-custom'>
-          <h2>{params.id ? 'EDITAR EQUIPE' : 'CRIAR EQUIPE'}</h2>
+          <h2>{params.id ? 'EDITAR TORNEIO' : 'CRIAR TORNEIO'}</h2>
         </div>
 
         {loading ? (
           <p>Carregando...</p>
         ) : (
           <Formik
-            initialValues={produto}
+            initialValues={torneio}
             enableReinitialize
             onSubmit={values => salvar(values)}
           >
@@ -92,32 +98,67 @@ export default function Page({ params }) {
                       </Col>
                     </Form.Group>
 
-                    <Form.Group as={Row} className="mb-4" controlId="regiao">
-                      <Form.Label column sm='2'><b>Região:</b> </Form.Label>
-                      <Col sm='9'>
+                    <Form.Group as={Row} className="mb-4" controlId="dataInicio">
+                      <Form.Label column sm='3'><b>Data de Início:</b> </Form.Label>
+                      <Col sm='8'>
                         <Form.Control
-                          type="text"
-                          name="regiao"
-                          value={values.regiao}
-                          onChange={handleChange('regiao')}
-                          isInvalid={touched.regiao && !!errors.regiao}
+                          type="date"
+                          name="dataInicio"
+                          value={values.dataInicio}
+                          onChange={handleChange('dataInicio')}
+                          isInvalid={touched.dataInicio && !!errors.dataInicio}
                         />
-                        <Form.Control.Feedback type="invalid">{errors.regiao}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{errors.dataInicio}</Form.Control.Feedback>
                       </Col>
                     </Form.Group>
 
-                    <Form.Group as={Row} className="mb-3" controlId="logo">
+                    <Form.Group as={Row} className="mb-4" controlId="dataFim">
+                      <Form.Label column sm='3'><b>Encerramento:</b> </Form.Label>
+                      <Col sm='8'>
+                        <Form.Control
+                          type="date"
+                          name="dataFim"
+                          value={values.dataFim}
+                          onChange={handleChange('dataFim')}
+                          isInvalid={touched.dataFim && !!errors.dataFim}
+                        />
+                        <Form.Control.Feedback type="invalid">{errors.dataFim}</Form.Control.Feedback>
+                      </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row} className="mb-4" controlId="jogoId">
+                      <Form.Label column sm='1'><b>Jogo:</b> </Form.Label>
+                      <Col sm='10'>
+                        <Form.Select
+                          name="jogoId"
+                          value={values.jogoId}
+                          onChange={(e) => {
+                            handleChange(e);
+                            setFieldValue('jogoId', e.target.value);
+                          }}
+                          isInvalid={touched.jogoId && !!errors.jogoId}
+                        >
+                          <option>Selecionar</option>
+                          {jogos.map(item => (
+                            <option key={item.id} value={item.id}>{item.nome}</option>
+                          ))}
+                        </Form.Select>
+                        <Form.Control.Feedback type="invalid">{errors.jogoId}</Form.Control.Feedback>
+                      </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row} className="mb-3" controlId="logoCamp">
                       <Form.Label column sm='1'><b>Logo:</b> </Form.Label>
                       <Col sm='10'>
                         <Form.Control
                           type="text"
-                          name="logo"
-                          placeholder="Url da Capa"
-                          value={values.logo}
-                          onChange={handleChange('logo')}
-                          isInvalid={touched.logo && !!errors.logo}
+                          name="logoCamp"
+                          placeholder="Url da Imagem"
+                          value={values.logoCamp}
+                          onChange={handleChange('logoCamp')}
+                          isInvalid={touched.logoCamp && !!errors.logoCamp}
                         />
-                        <Form.Control.Feedback type="invalid">{errors.logo}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{errors.logoCamp}</Form.Control.Feedback>
                       </Col>
                     </Form.Group>
 
@@ -128,8 +169,8 @@ export default function Page({ params }) {
 
                   <Col>
                     <div className="d-flex justify-content-center align-items-center mt-5">
-                      {values.logo ? (
-                        <Image src={values.logo} alt="Preview Foto" className="imagem_produto_preview" />
+                      {values.logoCamp ? (
+                        <Image src={values.logoCamp} alt="Preview Foto" className="imagem_produto_preview" />
                       ) : (
                         <h2 className="text-danger imagem_produto_preview_no_image">Sem Foto!</h2>
                       )}

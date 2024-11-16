@@ -36,8 +36,6 @@ export default function Page({ params }) {
     })
   }, [])
 
-  console.log(jogos)
-
   //A API VAI DEIXAR MUITO LERDO ENTAO O JEITO É FAZER ISSO AQ MESMO
   const countries = [
     { name: "Brazil", code: "BR" },
