@@ -11,6 +11,7 @@ import { FaCheck } from "react-icons/fa";
 import { ImArrowRight } from "react-icons/im";
 import { MdOutlineArrowBack } from "react-icons/md";
 import apiESports from "@/services/apiESports";
+import playerValidationSchema from "@/app/validations/playersValidator";
 
 export default function Page({ params }) {
   const route = useRouter();
@@ -65,6 +66,7 @@ export default function Page({ params }) {
           <Formik
             initialValues={produto}
             enableReinitialize
+            validationSchema={playerValidationSchema}
             onSubmit={values => salvar(values)}
           >
             {({
