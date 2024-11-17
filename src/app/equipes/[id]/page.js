@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import Header from "@/app/components/Header/Header";
 import Footer from "@/app/components/Footer/Footer";
 import Swal from "sweetalert2";
+import Link from "next/link";
+import './style.css'
 
 export default function Page({ params }) {
   const [equipe, setEquipe] = useState({});
@@ -116,21 +118,23 @@ export default function Page({ params }) {
             <Col md={8} className="text-black">
               <>
                 <h2>{equipe.nome}</h2>
-                <h3>{equipe.regiao}</h3>
+                <h5>Região: {equipe.regiao}</h5>
               </>
             </Col>
           </Row>
 
-          <Row className="my-5 text-black">
-            <h2 className="d-flex justify-content-center">Integrantes</h2>
+          <Row className="mt-5 text-black">
+            <h2 className="d-flex justify-content-center mb-3">Integrantes</h2>
             {equipe.jogadores && <>
               {equipe.jogadores.map(item => (
                 <Col md={2} key={item.id}>
                   <Card>
-                    <Card.Img variant="top" src={item.foto} />
-                    <Card.Body>
-                      <Card.Title>{item.nick}</Card.Title>
-                    </Card.Body>
+                    <Link href={`/players/${item.id}`}>
+                      <Card.Img variant="top" src={item.foto} />
+                      <Card.Body>
+                        <Card.Title className="text-black">{item.nick}</Card.Title>
+                      </Card.Body>
+                    </Link>
                   </Card>
                   {isAdmin &&
                     <Button
@@ -170,13 +174,20 @@ export default function Page({ params }) {
 
           <Row className="my-5 text-black">
             <h2 className="d-flex justify-content-center">Torneios</h2>
-            {equipe.torneios && <>
-              {equipe.torneios.map(item => (
-                <p key={item.id}>
-                  {item.nome}
-                </p>
-              ))}
-            </>}
+            <div className="d-flex justify-content-center">
+              {equipe.torneios && <>
+                {equipe.torneios.map(item => (
+                  <Link href={`/campeonatos/${item.id}`}>
+                    <Card>
+                      <Card.Img variant="top" src={item.logoCamp} className='p-2 game-card-img' />
+                      <Card.Body className="d-flex justify-content-center">
+                        <Card.Title className='text-black'>{item.nome}</Card.Title>
+                      </Card.Body>
+                    </Card>
+                  </Link>
+                ))}
+              </>}
+            </div>
           </Row>
         </div>
       </Container>

@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import apiESports from '@/services/apiESports';
 import Swal from 'sweetalert2';
 import { FaPlus, FaRegEdit, FaRegTrashAlt } from 'react-icons/fa';
+import Footer from '../components/Footer/Footer';
 
 export default function Page() {
 
@@ -116,6 +117,7 @@ export default function Page() {
           ))}
         </Row>
       </Container>
+      <Footer />
     </>
   );
 }

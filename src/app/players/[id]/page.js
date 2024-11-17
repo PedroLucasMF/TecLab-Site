@@ -5,6 +5,8 @@ import apiESports from "@/services/apiESports";
 import { useEffect, useState } from "react";
 import Header from "@/app/components/Header/Header";
 import Footer from "@/app/components/Footer/Footer";
+import './style.css'
+import Link from "next/link";
 
 export default function Page({ params }) {
 
@@ -26,32 +28,36 @@ export default function Page({ params }) {
               <Image src={jogador.foto} width={350} alt={jogador.nick} title={jogador.nick} />
             </Col>
 
-            <Col md={8} className="text-black">
-              <h2>{jogador.nick}</h2>
-              <h3>{jogador.nomeReal}</h3>
-              <p>{jogador.idade}</p>
-              <p>{jogador.pais}</p>
+            <Col md={4} className="text-black">
+              <h1>{jogador.nick}</h1>
+              <h3>Nome: {jogador.nomeReal}</h3>
+              <h5 className="my-3">Idade: {jogador.idade}</h5>
+              <p>Origem: <b>{jogador.pais}</b></p>
             </Col>
-          </Row>
 
-          <Row className="my-5 text-black">
-            <h2 className="d-flex justify-content-center">Membro da Equipe</h2>
-            {jogador.equipe && <>
-              {jogador.equipe.map(item => (
-                <div className="d-flex justify-content-center">
-                  <Card>
-                    <Card.Img variant="top" src={item.logo} />
-                    <Card.Body>
-                      <Card.Title>{item.nome}</Card.Title>
-                    </Card.Body>
-                  </Card>
-                </div>
-              ))}
-            </>}
+            <Col className="text-black" md={4}>
+              <h3 className="d-flex justify-content-center mb-4">Membro da Equipe</h3>
+              {jogador.equipe && <>
+                {jogador.equipe.map(item => (
+                  <div className="d-flex justify-content-center">
+                    <Card>
+                      <Link className="text-black" href={`/equipes/${item.id}`}>
+                        <Card.Img variant="top" className="p-2" alt="logo" title={item.nome} src={item.logo} />
+                        <Card.Body>
+                          <Card.Title>{item.nome}</Card.Title>
+                        </Card.Body>
+                      </Link>
+                    </Card>
+                  </div>
+                ))}
+              </>}
+            </Col>
           </Row>
         </div>
       </Container>
-      <Footer />
+      <div className="footer-maldito">
+        <Footer />
+      </div>
     </>
   )
 }
