@@ -1,0 +1,33 @@
+.card {
+  transition: transform 0.3s ease-in-out;
+  border: none;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  border: none;
+  box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.238), 0 6px 20px 0 rgba(0, 0, 0, 0.238);
+}
+
+a{
+  text-decoration: none;
+}
+
+.game-card {
+  height: 460px; /* Altura fixa para os cards */
+  width: 100%;   /* A largura será definida pelo grid do Bootstrap */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  border: 1px solid black;
+}
+
+.game-card-img {
+  height: 400px; /* Altura fixa para a imagem */
+  object-fit: fill; /* Ajusta a imagem para cobrir o espaço sem distorcer */
+}
+
+.borda-sombra {
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.536);
+}

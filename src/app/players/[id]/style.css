@@ -1,0 +1,30 @@
+.card {
+  transition: transform 0.3s ease-in-out;
+  border: none;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  border: none;
+  box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.238), 0 6px 20px 0 rgba(0, 0, 0, 0.238);
+}
+
+a {
+  text-decoration: none;
+}
+
+.game-card-img {
+  height: 200px;
+  /* Altura fixa para a imagem */
+  object-fit: contain;
+  /* Ajusta a imagem para cobrir o espaço sem distorcer */
+}
+
+.footer-maldito{
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  color: white;
+  text-align: center;
+}

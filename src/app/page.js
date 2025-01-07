@@ -1,95 +1,99 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client'
+
+import { Card, Carousel, Col, Container, Image, Row } from "react-bootstrap";
+import Header from "./components/Header/Header";
+import './mainStyle.css';
+import Footer from "./components/Footer/Footer";
+import { useEffect, useState } from "react";
+import apiESports from "@/services/apiESports";
+import Link from "next/link";
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+  const [selectedGame, setSelectedGame] = useState(null);
+  const [jogos, setJogos] = useState([]);
+  const [torneios, setTorneios] = useState([]);
+
+  useEffect(() => {
+    apiESports.get(`/jogos`).then(resultado => {
+      setJogos(resultado.data.data);
+    });
+    apiESports.get(`/torneios`).then(resultado => {
+      setTorneios(resultado.data.data);
+    });
+  }, []);
+
+  const handleMouseEnter = async (game) => {
+    try {
+      const resultado = await apiESports.get(`/generos/${game.generoId}`);
+      const genero = resultado.data.nome;
+
+      setSelectedGame({ ...game, genero });
+    } catch (error) {
+      console.error("Erro ao buscar gênero:", error);
+    }
+  };
+
+  const renderGameInfo = (game) => (
+    <Card className="text-light bg-dark p-3">
+      <Card.Body>
+        <Card.Title className="text-success">{game.nome}</Card.Title>
+        <div>
+          <span>{game.genero}</span>
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <Card.Img variant="top" src={game.foto} className="my-3" style={{ height: '200px', objectFit: 'fit' }} />
+        <Card.Text>{game.descricao}</Card.Text>
+      </Card.Body>
+    </Card>
+  );
+
+  return (
+    <>
+      <Header />
+      <Container>
+        <h1 className="d-flex justify-content-center my-4">Populares no Momento</h1>
+        <div className="d-flex justify-content-center">
+          <Carousel className="w-75 carousel_background" fade indicators={false}>
+            {torneios.map(item => (
+              <Carousel.Item key={item.id} interval={3000}>
+                <Link href={`/campeonatos/${item.id}`}>
+                  <Image className="d-block w-100 carousel_img" src={item.logoCamp} />
+                </Link>
+                <Carousel.Caption className="carousel_caption_area">
+                  <h3>{item.nome}</h3>
+                </Carousel.Caption>
+              </Carousel.Item>
+            ))}
+          </Carousel>
+        </div>
+
+        <h2 className="d-flex justify-content-center my-5">Jogos Populares</h2>
+        {jogos &&
+          <Row className="g-4">
+            <Col md={8}>
+              <Row xs={1} md={3} className="g-4">
+                {jogos.map((game, index) => (
+                  <Col key={index}>
+                    <Link href={`/jogos/${game.id}`}>
+                      <Card
+                        onMouseEnter={() => handleMouseEnter(game)}
+                        style={{ height: '350px', width: '250px' }}
+                      >
+                        <Card.Img variant="top" src={game.cover} style={{ height: '350px', objectFit: 'fit' }} />
+                      </Card>
+                    </Link>
+                  </Col>
+                ))}
+              </Row>
+            </Col>
+            <Col md={4}>
+              {selectedGame ? renderGameInfo(selectedGame) : <p>Passe o mouse sobre um jogo para ver os detalhes.</p>}
+            </Col>
+          </Row>
+        }
+
+      </Container>
+      <Footer />
+    </>
   );
 }
